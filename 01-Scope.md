@@ -62,3 +62,10 @@ webadmin / WrongPassword
 admin / admin
 autoadmin / Jenk!nsADMIN
 ```
+
+<br/>
+
+```
+operations.atomic.site
+adm_domain NTLM:  3d15cb1141d579823f8bb08f1f23e316
+```
