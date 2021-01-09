@@ -17,4 +17,5 @@
 
   * [Production Server](05-PostExploit-Production.md)
   * [Lateral Movement - 1](06-LateralMovement.md)
+  * [Lateral Movement - 2](07-LateralMovement2.md)
 
