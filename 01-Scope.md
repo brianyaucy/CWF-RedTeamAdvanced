@@ -67,5 +67,13 @@ autoadmin / Jenk!nsADMIN
 
 ```
 operations.atomic.site
-adm_domain NTLM:  3d15cb1141d579823f8bb08f1f23e316
+adm_domain / 3d15cb1141d579823f8bb08f1f23e316
+
+atomic.site
+Administrator / c49927a1eb5a335dfb681db95d3a45a2  
+krbtgt / 5d14653ad207e053f2dbb9e3833b08bf
+
+nuclear.site
+iis_svc / B@DB!tch
+
 ```
