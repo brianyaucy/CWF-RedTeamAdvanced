@@ -12,18 +12,14 @@
   * [Recon](02-Recon.md)
   * [OSINT](03-OSINT.md)
 - - - -
-[Initial Access]()
+[Path 1: Web Exploit]()
 
-  * [Web Exploit](04-WebExploit.md)
-
-- - - -
-[Post-Exploit]()
-
-  * [Production Server](05-PostExploit-Production.md)
-  * [Lateral Movement - 1](06-LateralMovement.md)
-  * [Lateral Movement - 2](07-LateralMovement2.md)
-  * [Jump Server](08-PostExploit-JumpServer.md)
+  * [Initial Access - Web Exploit](04-WebExploit.md)
+  * [Post-Exploit - Production Server](05-PostExploit-Production.md)
+  * [Post-Exploit - Lateral Movement - 1](06-LateralMovement.md)
+  * [Post-Exploit - Lateral Movement - 2](07-LateralMovement2.md)
+  * [Post-Exploit - Jump Server](08-PostExploit-JumpServer.md)
+  * [Actions on Objectives](09-ActionsOnObjectives.md)
+  * [Path 1 Summary](10-PathOneSummary.md)
 
 - - - -
-[Actions on Objectives](09-ActionsOnObjectives.md)
-
