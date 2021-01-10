@@ -16,9 +16,13 @@
 atomic-nuclear.site
 ```
 
+<br/>
+
 # Objectives
-1. Nuclear Meltdown (detrimental-state)
+1. Cause nuclear meltdown (detrimental-state)
 2. Exfiltrate critical information on one of the air-gapped networks in the Lab environment.
+
+<br/>
 
 # Collection
 
@@ -37,20 +41,30 @@ admin@atomic-nuclear.site
 * (Senior Principal Scientist)
 homi@atomic-nuclear.site
 
+<br/>
+
 ## Git
 - [GitHub - atomic-nuclear/atomic-nuclear.github.io](https://github.com/atomic-nuclear/atomic-nuclear.github.io)
 - [GitHub - atomic-nuclear/Scada-Repo](https://github.com/atomic-nuclear/Scada-Repo)
 - [GitHub - atomic-nuclear/Critical-Information: This Repository Contains Sensitive Information Related to Nuclear Power Plant.](https://github.com/atomic-nuclear/Critical-Information)
 
+<br/>
+
 ## Tech
 * S3 bucket
   * Location: Unknown but Scientist should have access
 
+<br/>
+
 ## Remote VDI
 - Remote VDI Password:  `Sc!ent!st@1221`
 
+<br/>
+
 ## Network Diagram
 ![picture 1](images/6b97ece5b0b5dac8cda58670220847b8abcbeb82e79a1131d08f72278ea7e5ab.png)  
+
+<br/>
 
 ## Credential
 
