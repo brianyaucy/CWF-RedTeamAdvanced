@@ -2,6 +2,7 @@
 
 - [Scope](#scope)
 - [Information Given](#information-given)
+- [Objectives](#objectives)
 - [Collection](#collection)
   - [Email](#email)
   - [Git](#git)
@@ -14,6 +15,10 @@
 ```
 atomic-nuclear.site
 ```
+
+# Objectives
+1. Nuclear Meltdown (detrimental-state)
+2. Exfiltrate critical information on one of the air-gapped networks in the Lab environment.
 
 # Collection
 
@@ -66,6 +71,8 @@ autoadmin / Jenk!nsADMIN
 <br/>
 
 ```
+# Windows Domain
+
 operations.atomic.site
 adm_domain / 3d15cb1141d579823f8bb08f1f23e316
 
@@ -75,8 +82,18 @@ krbtgt / 5d14653ad207e053f2dbb9e3833b08bf
 
 nuclear.site
 iis_svc / B@DB!tch
+```
 
+<br/>
+
+```
 Jump-Server.nuclear.site (10.1.1.4)
 jump-admin / B@DB!tch
+```
 
+<br/>
+
+```
+scada-host.scada.local (10.2.1.1)
+Administrator / SCADAAdmin!@#$%
 ```

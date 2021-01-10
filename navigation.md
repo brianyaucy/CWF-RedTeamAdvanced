@@ -24,5 +24,6 @@
   * [Lateral Movement - 2](07-LateralMovement2.md)
   * [Jump Server](08-PostExploit-JumpServer.md)
 
-
+- - - -
+[Actions on Objectives](09-ActionsOnObjectives.md)
 
