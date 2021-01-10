@@ -95,7 +95,7 @@ The cracked password is:<br/>
 Getting the service account password (which is also a Domain Admin), we can use `psexec` to access from the attacker machine:
 
 ```
-echo "nuclear-dc.nuclear.site 10.1.1.3" >> /etc/hosts
+echo "10.1.1.3 nuclear-dc.nuclear.site" >> /etc/hosts
 ```
 
 ```
