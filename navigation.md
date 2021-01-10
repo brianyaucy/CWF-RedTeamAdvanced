@@ -1,5 +1,9 @@
 # CyberWarFare Atomic Nuclear
 
+[Shortcut](00-Shortcut.md)
+
+- - - -
+
 [Scope](01-Scope.md)
 
 - - - - 
