@@ -1,6 +1,6 @@
-# Lateral Movement 1
+# Lateral Movement 1 - Forum & DB
 
-- [Lateral Movement 1](#lateral-movement-1)
+- [Lateral Movement 1 - Forum & DB](#lateral-movement-1---forum--db)
   - [Neighbor discovery](#neighbor-discovery)
   - [Proxy using rpivot](#proxy-using-rpivot)
   - [Enumeration](#enumeration)
