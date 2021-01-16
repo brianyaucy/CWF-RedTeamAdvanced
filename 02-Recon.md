@@ -3,6 +3,7 @@
 - [Recon](#recon)
   - [Domain](#domain)
     - [nslookup](#nslookup)
+    - [Sublist3r](#sublist3r)
   - [Service Enumerations](#service-enumerations)
     - [Web](#web)
       - [SSL Certificate](#ssl-certificate)
@@ -25,6 +26,26 @@ nslookup -type=any atomic-nuclear.site
 > IP Address:
 192.168.8.3
 <br/>
+
+### Sublist3r
+
+Use `Sublist3r` to enumerate & brute force the subdomains:
+
+```
+./sublist3r.py -b -d atomic-nuclear.site
+```
+
+![picture 95](images/8d7e690e09989eb10946ec495915dff994ead6c85194f3d687c1433d9650ca5f.png)  
+
+```
+atomic-nuclear.site
+www.atomic-nuclear.site
+git.atomic-nuclear.site
+mail.atomic-nuclear.site
+rds.atomic-nuclear.site
+secretserver.atomic-nuclear.site
+vdi.atomic-nuclear.site
+```
 
 ---
 

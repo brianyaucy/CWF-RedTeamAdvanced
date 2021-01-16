@@ -23,3 +23,9 @@
   * [Path 1 Summary](10-PathOneSummary.md)
 
 - - - -
+[Path 2: Phishing]()
+
+  * [Initial Access - Phishing](21-Phishing.md)
+  * [Post-Exploit - Scientist Machines](22-PostExploit-ScientistMachine.md)
+  * 
+

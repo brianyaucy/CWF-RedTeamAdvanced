@@ -5,6 +5,7 @@
 - [Objectives](#objectives)
 - [Collection](#collection)
   - [Email](#email)
+  - [Domains](#domains)
   - [Git](#git)
   - [Tech](#tech)
   - [Remote VDI](#remote-vdi)
@@ -40,6 +41,20 @@ Port: 110,143
 admin@atomic-nuclear.site
 * (Senior Principal Scientist)
 homi@atomic-nuclear.site
+
+<br/>
+
+## Domains
+
+```
+atomic-nuclear.site
+www.atomic-nuclear.site
+git.atomic-nuclear.site
+mail.atomic-nuclear.site
+rds.atomic-nuclear.site
+secretserver.atomic-nuclear.site
+vdi.atomic-nuclear.site
+```
 
 <br/>
 
