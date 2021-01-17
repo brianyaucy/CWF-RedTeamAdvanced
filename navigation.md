@@ -28,7 +28,8 @@
   * [Initial Access - Phishing](21-Phishing.md)
   * [Post-Exploit - Scientist Machines](22-PostExploit-ScientistMachine.md)
   * [Lateral Movement 1 - Forum & DB](23-LateralMovement1.md)
-
+  * [Post-Exploit - DB Server](24-PostExploit-DB-Server.md)
+  * [Lateral Movement 2 - Child DC to Forest DC](25-LateralMovement2.md)
 - - - -
 
 
