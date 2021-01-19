@@ -30,6 +30,19 @@
   * [Lateral Movement 1 - Forum & DB](23-LateralMovement1.md)
   * [Post-Exploit - DB Server](24-PostExploit-DB-Server.md)
   * [Lateral Movement 2 - Child DC to Forest DC](25-LateralMovement2.md)
+  
 - - - -
+[Path 3: VDI]()
+
+  * [Initial Access - VDI](30-InitialAccess.md)
+  * [Lateral Movement 1 - Nuclear DC](31-LateralMovementtoDC.md)
+  * [Lateral Movement 2 - Jump-Server](32-LateralMovement2JumpServer.md)
+  * [Lateral Movement 3 - SCADA](33-LateralMovement3.md)
+  * [Actions On Objectives](34-ActionsOnObjective.md)
+  * [Path 3 Summary](35-PathThreeSummary.md)
+
+- - - -
+
+
 
 
